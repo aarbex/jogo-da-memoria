@@ -25,6 +25,14 @@ function shuffle(array) {
     return array;
 }
 
+function girarCarta(){
+	this.classList.toggle("open"); 
+	this.classList.toggle("show"); 
+}
+
+for(i = 0; i < 16; i++){
+	document.getElementById(i).addEventListener('click', girarCarta, false);
+}
 
 /*
  * set up the event listener for a card. If a card is clicked:
