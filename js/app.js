@@ -11,6 +11,11 @@
  */
 
 // Shuffle function from http://stackoverflow.com/a/2450976
+let card = $(".card");
+let cartas = [];
+let cartasViradas = [];
+let cardsEncontrados = 0;
+
 function shuffle(array) {
     var currentIndex = array.length, temporaryValue, randomIndex;
 
@@ -25,14 +30,71 @@ function shuffle(array) {
     return array;
 }
 
-function girarCarta(){
-	this.classList.toggle("open"); 
-	this.classList.toggle("show"); 
-}
 
-for(i = 0; i < 16; i++){
-	document.getElementById(i).addEventListener('click', girarCarta, false);
-}
+
+(function(){
+
+    $(".card").click(girarCarta);
+
+    function girarCarta(){
+
+        if (cartas.length < 2){
+            $(this).toggleClass("open show");
+            cartas.push($(this));
+        }
+
+        if (cartas.length === 2){
+            console.log('aqui');            
+            compararCartas(cartas);
+            //cardsVirados = [];
+        }
+
+    }
+
+    function compararCartas(cartasViradas){
+
+            let card1 =  obterCard(cartasViradas[0]);
+            let card2 =  obterCard(cartasViradas[1]);
+            
+            if ( card1 === card2){
+                cardsEncontrados++;
+                cartasViradas.forEach(function(card){
+                    card.animateCss('tada', function(){
+                        card.toggleClass("open show match");
+                });
+            });
+            } else {
+                cartasViradas.forEach(function(card){
+                    card.animateCss('shake', function(){
+                    card.toggleClass("open show");
+                    });
+                });
+            }
+
+            cartas = [];
+            
+    }   
+
+    function obterCard(cartaPega){
+        return cartaPega[0].firstChild.nextSibling.classList[1];
+    }
+    
+$.fn.extend({
+    animateCss: function (animationName, callback) {
+        var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
+        this.addClass('animated ' + animationName).one(animationEnd, function () {
+            $(this).removeClass('animated ' + animationName);
+            if (callback) {
+                callback();
+            }
+        });
+        return this;
+    }
+});
+
+}())
+
+
 
 /*
  * set up the event listener for a card. If a card is clicked:
@@ -44,3 +106,4 @@ for(i = 0; i < 16; i++){
  *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
+
