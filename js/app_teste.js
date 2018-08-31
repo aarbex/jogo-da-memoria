@@ -29,7 +29,7 @@ class Game{
 
       //  let cardsVirados = [];
         let card1 =  game.obterImagemDoCard(cardsVirados[0]);
-        let card2 =  game.obterImagemDoCard(cardsVirados[1])
+        let card2 =  game.obterImagemDoCard(cardsVirados[1]);
 
         if ( card1 === card2){
             cardsEncontrados++;
@@ -62,7 +62,7 @@ class Game{
    
 
     populateCards(){
-        cards = game.shuffle(cards);
+        cards = game.shuffle(cartas);
         for(var i=0; i<cards.length; i++) {
             document.querySelector(".deck").innerHTML = "";
             [].forEach.call(cards, function(item) {
@@ -112,10 +112,9 @@ class Game{
         if (cardsVirados.length === 2){
             game.verificaCardsVirados(cardsVirados)
             cardsVirados = [];
-            game.atualizarNumeroDeJogadas();
         }
 
-        
+        game.atualizarNumeroDeJogadas();
 
     }
     
@@ -125,7 +124,7 @@ class Game{
 
     iniciarCronometro() {
         currentTimer = setInterval(() => {
-            timer.textContent= `${seg}`
+            timer.textContent= '${seg}'
             seg++;
         }, 1000);
     }
