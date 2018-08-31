@@ -15,6 +15,12 @@ let card = $(".card");
 let cartas = [];
 let cartasViradas = [];
 let cardsEncontrados = 0;
+let seg = 0;
+let iniciarJogo = false;
+let numeroJogadas= 0;
+let cronometro;
+let currentTimer;
+let timer = document.querySelector('#timer');
 
 function shuffle(array) {
     var currentIndex = array.length, temporaryValue, randomIndex;
@@ -35,21 +41,38 @@ function shuffle(array) {
 (function(){
 
     $(".card").click(girarCarta);
+    $('.restart').click(resetar);
+    iniciaJogo;
+
+    function iniciaJogo(){
+        popularCartas();
+    }
+
 
     function girarCarta(){
 
+        let card= $(this);
+
+        if (card.hasClass('open show') || card.hasClass("match")){
+            return;
+        }
+        if (!iniciarJogo) {
+            iniciarJogo = true;
+            cronometro = setTimeout(iniciarCronometro(), 500);
+        }
         if (cartas.length < 2){
             $(this).toggleClass("open show");
             cartas.push($(this));
         }
 
-        if (cartas.length === 2){
-            console.log('aqui');            
+        if (cartas.length === 2){        
             compararCartas(cartas);
-            //cardsVirados = [];
+            cardsVirados = [];
         }
 
     }
+
+    
 
     function compararCartas(cartasViradas){
 
@@ -71,14 +94,77 @@ function shuffle(array) {
                 });
             }
 
+            if (cardsEncontrados === 8){
+                finalizarJogo()
+            }
+
             cartas = [];
+
+            atualizarNumeroDeJogadas();
             
     }   
 
     function obterCard(cartaPega){
         return cartaPega[0].firstChild.nextSibling.classList[1];
     }
-    
+
+    function resetar(){
+        location.reload(currentTimer);
+    }
+
+    function popularCartas(){
+        cards = shuffle(cards);
+        for(var i=0; i<cards.length; i++) {
+            document.querySelector(".deck").innerHTML = "";
+            [].forEach.call(cards, function(item) {
+                document.querySelector(".deck").appendChild(item);
+            });
+        }
+    }
+
+    function removeEstrela(){
+        let stars = $(".fa-star");
+        $(stars[stars.length-1]).toggleClass("fa-star fa-star-o");         
+    }
+
+
+    function atualizarNumeroDeJogadas(){
+        numeroJogadas++;
+        let numJogadas = $('.moves');
+        numJogadas.text(numeroJogadas);
+        if (numeroJogadas === 12 || numeroJogadas === 18 ){
+            removeEstrela();
+        }
+    }
+
+    function iniciarCronometro() {
+        currentTimer = setInterval(() => {
+            timer.textContent = seg;
+            seg++;
+        }, 1000);
+    }
+
+    function finalizarJogo(){
+        let stars = $(".fa-star");
+        clearInterval(currentTimer)
+        swal({
+            title: 'Parabéns',
+            text: `Você terminou o jogo em  ${seg} segundos e com ${stars.length} de 3 estrelas.
+            Deseja jogar novamente? `,
+            type: 'success',
+            showCancelButton: true,
+            confirmButtonColor: '#2A4B66',
+            cancelButtonColor: '#FF231C',
+            confirmButtonText: 'Sim',
+            cancelButtonText: 'Não'
+          }).then((result) => {
+            if (result.value) {
+                setTimeout(resetar, 500)
+            }
+          })
+    }
+
+
 $.fn.extend({
     animateCss: function (animationName, callback) {
         var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
