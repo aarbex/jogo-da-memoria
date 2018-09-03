@@ -1,3 +1,4 @@
+//Declarações de variáveis
 'use strict';
 let card = $(".card");
 let cards = [...card];
@@ -11,7 +12,7 @@ let cronometro;
 let currentTimer;
 let timer = document.querySelector('#timer');
 
-
+//Criação de listeners de eventos para interatividade com o jogo 
 $(function() {
 
     $('.card').click(game.selecionarCard);
@@ -20,13 +21,14 @@ $(function() {
 
 });
 
-
+//criação do objeto Game com seus métodos
 class Game{
-
+    //funcção que inicia o jogo;
     initGame(){
         game.populateCards();
      }
 
+    //função que verifica as duas cartas viradas em cada rodada são iguais.  
     verificaCardsVirados(cardsVirados){
 
       //  let cardsVirados = [];
@@ -56,7 +58,7 @@ class Game{
         
     }
  
-
+    //função que atualiza a quantidade de rodadas. 
     atualizarNumeroDeJogadas(){
         numeroJogadas++;        
         let numJogadas = $('.moves');
@@ -66,7 +68,7 @@ class Game{
         }
     }
    
-
+    //função que carrega as cartas, aleatóriamente, antes do jogo ou após seu reinício. 
     populateCards(){
         cards = game.shuffle(cards);
         for(var i=0; i<cards.length; i++) {
@@ -77,7 +79,7 @@ class Game{
             //cards[i].classList.remove("show", "open", "match", "disabled");
         }
     }
-
+    //função que embaralha os cards para que sejam diferentes em cada rodada.
     shuffle(array) {
         var currentIndex = array.length, temporaryValue, randomIndex;
     
@@ -92,12 +94,14 @@ class Game{
         return array;
     }
 
+    //função que remove as estrelas após determinado número de jogadas.
     removeEstrela(){
         let stars = $(".fa-star");
         $(stars[stars.length-1]).toggleClass("fa-star fa-star-o"); 
         
     }
 
+    //função chamada após cada click nas cartas, responsável por atribuir as classes CSS necessárias para girar as cartas.
     selecionarCard(){
 
         let card= $(this);
@@ -116,7 +120,9 @@ class Game{
         }
 
         if (cardsVirados.length === 2){
+            //comando para pausar o evento click quando 2 cartas já estiverem viradas.
             $('.card').off('click');
+            //comando para voltar o evento click após 1 segundo depois da verificação de igualdade das cartas, evitando assim que mais de 2 cartas sejam abertas simultaneamente.
             delay = setInterval(game.novaJogada, 1000);
             game.verificaCardsVirados(cardsVirados)
             cardsVirados = [];
@@ -125,21 +131,23 @@ class Game{
         
     }
 
+    //função que retoma o evento click após ele ter sido interrompido na função anterior
     novaJogada(){
         $('.card').click(game.selecionarCard);
         game.limparIntervalo();
     }
 
+    //funcção que limpa o intervalo do delay do evento click.
     limparIntervalo(){    
         clearInterval(delay);
     }
 
-
+    //função que verifica qual a imagem da carta para poder compará-la posteriormente.
     obterImagemDoCard(card){
       return card[0].firstChild.nextSibling.classList[1];
     }
 
-
+    //função que inicia o cronometro do jogo.
     iniciarCronometro() {
         currentTimer = setInterval(() => {
             timer.textContent= `${seg}`
@@ -147,6 +155,7 @@ class Game{
         }, 1000);
     }
 
+    //função chamada ao clicar no botão reset, responsável por limpar todas as variáveis e reiniciar o jogo.
     reset(){
         location.reload(currentTimer);
         let card = $(".card");
@@ -158,6 +167,7 @@ class Game{
         let cardsEncontrados = 0;
     }
 
+    //função chamada após todas as cartas estarem em "match", apresentando um modal com o status do jogo após seu término.
     finalizarJogo(){
         let stars = $(".fa-star");
         clearInterval(currentTimer)
@@ -180,6 +190,7 @@ class Game{
 
 }
 
+//comando responsável por adicionar as animações quando as cartas são viradas e verificadas.
 $.fn.extend({
     animateCss: function (animationName, callback) {
         var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
@@ -194,4 +205,5 @@ $.fn.extend({
     }
 });
 
+//reinício do objeto Game para início de outra partida.
 let game = new Game();
