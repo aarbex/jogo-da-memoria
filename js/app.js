@@ -1,3 +1,4 @@
+'use strict';
 let card = $(".card");
 let cards = [...card];
 let iniciarJogo = false;
