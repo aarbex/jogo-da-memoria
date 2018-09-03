@@ -5,6 +5,7 @@ let cardsVirados = []; //
 let numeroJogadas= 0;
 let seg = 0;
 let cardsEncontrados = 0;
+let delay;
 let cronometro;
 let currentTimer;
 let timer = document.querySelector('#timer');
@@ -46,13 +47,17 @@ class Game{
             });
         }
 
+
         if (cardsEncontrados === 8){
 
             game.finalizarJogo()
-        }
+        }        
+        
     }
+ 
+
     atualizarNumeroDeJogadas(){
-        numeroJogadas++;
+        numeroJogadas++;        
         let numJogadas = $('.moves');
         numJogadas.text(numeroJogadas);
         if (numeroJogadas === 12 || numeroJogadas === 18 ){
@@ -110,18 +115,29 @@ class Game{
         }
 
         if (cardsVirados.length === 2){
+            $('.card').off('click');
+            delay = setInterval(game.novaJogada, 1000);
             game.verificaCardsVirados(cardsVirados)
             cardsVirados = [];
-            game.atualizarNumeroDeJogadas();
+            game.atualizarNumeroDeJogadas();            
         }
-
         
-
     }
-    
+
+    novaJogada(){
+        $('.card').click(game.selecionarCard);
+        game.limparIntervalo();
+    }
+
+    limparIntervalo(){    
+        clearInterval(delay);
+    }
+
+
     obterImagemDoCard(card){
       return card[0].firstChild.nextSibling.classList[1];
     }
+
 
     iniciarCronometro() {
         currentTimer = setInterval(() => {
@@ -132,6 +148,13 @@ class Game{
 
     reset(){
         location.reload(currentTimer);
+        let card = $(".card");
+        let cards = [...card];
+        let iniciarJogo = false;
+        let cardsVirados = []; //
+        let numeroJogadas= 0;
+        let seg = 0;
+        let cardsEncontrados = 0;
     }
 
     finalizarJogo(){
@@ -165,6 +188,7 @@ $.fn.extend({
                 callback();
             }
         });
+
         return this;
     }
 });
